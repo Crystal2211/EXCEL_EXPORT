@@ -27,13 +27,15 @@ namespace WEB_APP.Controllers
         private readonly ICbillService _CbillService;
         private readonly IMapper _mapper;
         private IHostingEnvironment _hostingEnvironment;
+        private IMenuMasterService _menuMasterService;
 
 
-        public CbillController(ICbillService villaService, IMapper mapper, IHostingEnvironment hostingEnvironment)
+        public CbillController(ICbillService villaService, IMapper mapper, IHostingEnvironment hostingEnvironment,IMenuMasterService menuMasterService)
         {
             _CbillService = villaService;
             _mapper = mapper;
             _hostingEnvironment = hostingEnvironment;
+            _menuMasterService = menuMasterService;
         }
         public async Task<IActionResult> Import()
         {
@@ -132,6 +134,12 @@ namespace WEB_APP.Controllers
         public async Task<IActionResult> Index()
         {
             List<CbillModel> list = new List<CbillModel>();
+
+            APIResponse menuForRole = await _menuMasterService.GetMenuFromRole<APIResponse>(HttpContext.User.Claims.ToList()[1].Value.ToString(), HttpContext.User.Claims.ToList()[3].Value.ToString());
+            if (menuForRole != null && menuForRole.IsSuccess)
+            {
+                TempData["RolesMenus"] = JsonConvert.DeserializeObject<List<MenuMasterModel>>(Convert.ToString(menuForRole.Result));
+            }
 
             var response = await _CbillService.GetAllAsync<APIResponse>(HttpContext.User.Claims.LastOrDefault().Value);//await HttpContext.GetTokenAsync("access_token"));
             if (response != null && response.IsSuccess)

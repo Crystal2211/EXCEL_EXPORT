@@ -6,7 +6,7 @@
 }
 
 <div class="row" style="padding-top:80px;padding-left:200px">
-    @if (User.Claims.ToList() != null && User.Claims.ToList().Count() > 0 && User.Claims.ToList()[1].Value == "admin" && User.Claims.LastOrDefault().Value != null)
+    @if (User.Claims.ToList() != null && User.Claims.ToList().Count() > 0 && User.Claims.ToList()[1].Value == "admin" && User.Claims.ToList()[1].Value == "MasterAdmin" && User.Claims.LastOrDefault().Value != null)
     {
         <div class="form-group">
             <div class="col-md-10">

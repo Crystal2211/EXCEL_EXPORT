@@ -92,6 +92,7 @@ namespace WEB_API.Controllers
         {
             try
             {
+
                 string Role = null;
                 string UserName = null;
                 var TokenValidations = WEB_API.Helpers.Helpers.TokenValidation(HttpContext.Request.Headers["Bearer"]);
@@ -116,7 +117,7 @@ namespace WEB_API.Controllers
                     return Ok(_response);
 
                 }
-                _response.Result = _mapper.Map<MenuMasterModel>(menuRecords);
+                _response.Result = _mapper.Map<List<MenuMasterModel>>(menuRecords);
                 _response.StatusCode = HttpStatusCode.OK;
                 return Ok(_response);
             }
@@ -128,5 +129,78 @@ namespace WEB_API.Controllers
             }
             return _response;
         }
+
+        [Route("CreateMenuRole")]
+        [HttpPost]
+        // [Authorize(Roles = "admin")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<ViewModels.Models.APIResponse>> CreateMenuRole([FromBody] MenuMasterModel menuMasterModel)
+        {
+            try
+            {
+                string Role = null;
+                string UserName = null;
+                var TokenValidations = Helpers.Helpers.TokenValidation(HttpContext.Request.Headers["Bearer"]);
+                if (TokenValidations.Key != null && TokenValidations.Value == true)
+                {
+                    var list = TokenValidations.Key.Split("|");
+                    Role = list[0];
+                    UserName = list[1];
+                }
+                else if (TokenValidations.Value == false)
+                {
+                    _response.IsSuccess = false;
+                    _response.ErrorMessages
+                         = new List<string>() { "Session Expire" };
+                    return _response;
+                }
+
+                if (menuMasterModel != null)
+                {
+                    if (menuMasterModel.MenuIdentity == 0)
+                    {
+                        //insert mode
+                        MenuMaster menuMaster = _mapper.Map<MenuMaster>(menuMasterModel);
+                        await _menuMasterDbService.CreateAsync(menuMaster);
+                        if (menuMaster != null && menuMaster.MenuIdentity > 0)
+                        {
+                            _response.IsSuccess = true;
+                            _response.StatusCode = HttpStatusCode.OK;
+                            _response.Result = _mapper.Map<MenuMasterModel>(menuMaster);
+                        }
+
+                    }
+                    else
+                    {
+                        //update mode
+                        MenuMaster menuMaster = _mapper.Map<MenuMaster>(menuMasterModel);
+                        await _menuMasterDbService.UpdateAsync(menuMaster);
+                        if (menuMaster != null && menuMaster.MenuIdentity > 0)
+                        {
+                            _response.IsSuccess = true;
+                            _response.StatusCode = HttpStatusCode.OK;
+                            _response.Result = _mapper.Map<MenuMasterModel>(menuMaster);
+                        }
+                    }
+                }
+                else
+                {
+                    _response.IsSuccess = false;
+                    _response.ErrorMessages
+                         = new List<string>() { "Error in passing model" };
+                    return _response;
+                }
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.ErrorMessages
+                     = new List<string>() { ex.ToString() };
+            }
+            return _response;
+        }
+
     }
 }

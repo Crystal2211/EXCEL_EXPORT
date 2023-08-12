@@ -27,11 +27,13 @@ namespace WEB_APP.Controllers
         private readonly ILoanservice _LoanService;
         private readonly IMapper _mapper;
         private IHostingEnvironment _hostingEnvironment;
-        public LoanController(ILoanservice villaService, IMapper mapper, IHostingEnvironment hostingEnvironment)
+        private IMenuMasterService _menuMasterService;
+        public LoanController(ILoanservice villaService, IMapper mapper, IHostingEnvironment hostingEnvironment,IMenuMasterService menuMasterService)
         {
             _LoanService = villaService;
             _mapper = mapper;
             _hostingEnvironment = hostingEnvironment;
+            _menuMasterService = menuMasterService;
         }
 
         public async Task<IActionResult> Import()
@@ -132,6 +134,11 @@ namespace WEB_APP.Controllers
 
             List<LoanModel> list = new List<LoanModel>();
 
+            APIResponse menuForRole = await _menuMasterService.GetMenuFromRole<APIResponse>(HttpContext.User.Claims.ToList()[1].Value.ToString(), HttpContext.User.Claims.ToList()[3].Value.ToString());
+            if (menuForRole != null && menuForRole.IsSuccess)
+            {
+                TempData["RolesMenus"] = JsonConvert.DeserializeObject<List<MenuMasterModel>>(Convert.ToString(menuForRole.Result));
+            }
             var response = await _LoanService.GetAllAsync<APIResponse>(HttpContext.User.Claims.LastOrDefault().Value);//await HttpContext.GetTokenAsync("access_token"));
             if (response != null && response.IsSuccess)
             {

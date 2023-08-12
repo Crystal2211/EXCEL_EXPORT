@@ -25,60 +25,131 @@
                         <li class="nav-item">
                             <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-
-                        @if (User.Claims.ToList() != null && User.Claims.ToList().Count() > 0 && User.Claims.ToList()[1].Value != null && (User.Claims.ToList()[1].Value == "admin" || User.Claims.ToList()[1].Value == "MasterAdmin"))
+                        @if (TempData["RolesMenus"] != null)
                         {
-                            <li class="nav-item">
-                                <a class="nav-link text-white" asp-area="" asp-controller="Account" asp-action="Index">Share</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-white" asp-area="" asp-controller="Deposit" asp-action="Index">Deposit</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-white" asp-area="" asp-controller="Loan" asp-action="Index">Loan</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-white" asp-area="" asp-controller="Cbill" asp-action="Index">Cbill</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-white" asp-area="" asp-controller="Auth" asp-action="Register">Register</a>
-                            </li>
+                            @foreach (var menuNames in ((List<ViewModels.Models.MenuMasterModel>)TempData["RolesMenus"]).Where(n => n.Parent_MenuID == "*" && n.USE_YN == "Y"))
+                            {
+                                @if ((((List<ViewModels.Models.MenuMasterModel>)TempData["RolesMenus"]).Where(t => t.Parent_MenuID == menuNames.MenuID)).Count() > 0)
+                                {
+                                    <li class="nav-item">
+                                        <a class="nav-link text-white" asp-area="" asp-controller=@menuNames.MenuURL asp-action=@menuNames.MenuFileName>@menuNames.MenuName</a>
+                                    </li>
 
-                            if (User.Claims.ToList()[1].Value == "MasterAdmin")
+                                    @foreach (var subMenu in ((List<ViewModels.Models.MenuMasterModel>)TempData["RolesMenus"]).Where(n => n.Parent_MenuID == @menuNames.MenuID && n.USE_YN == "Y"))
+                                    {
+                                        <li>
+                                            <a class="nav-link text-white" asp-area="" asp-controller=@subMenu.MenuURL asp-action=@subMenu.MenuFileName>@subMenu.MenuName</a>
+                                        </li>
+                                    }
+
+
+                                    @*<li class="nav-item dropdown ">
+                                            <a class="nav-link dropdown-toggle" id="navbarDropdown+@menuNames.MenuFileName" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                @menuNames.MenuName
+                                            </a>
+
+                                            <div class="dropdown-menu" aria-labelledby="navbarDropdown+@menuNames.MenuFileName">
+                                                @foreach (var subMenu in ((List<ViewModels.Models.MenuMasterModel>)TempData["RolesMenus"]).Where(n => n.Parent_MenuID == @menuNames.MenuID))
+                                                {
+                                                    <a class="dropdown-item" asp-area="" asp-controller=@subMenu.MenuURL asp-action=@subMenu.MenuFileName>@subMenu.MenuName</a>
+                                                }
+                                            </div>
+                                        </li>*@
+                                }
+                                else
+                                {
+                                    <li class="nav-item">
+                                        <a class="nav-link text-white" asp-area="" asp-controller=@menuNames.MenuURL asp-action=@menuNames.MenuFileName>@menuNames.MenuName</a>
+                                    </li>
+                                }
+                            }
+                        }
+                        else
+                        {
+
+                            @if (User.Claims.ToList() != null && User.Claims.ToList().Count() > 0 && User.Claims.ToList()[1].Value != null && (User.Claims.ToList()[1].Value == "admin" || User.Claims.ToList()[1].Value == "MasterAdmin"))
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link text-white" asp-area="" asp-controller="MenuMaster" asp-action="AddMenuForRole">Role Menu</a>
+                                    <a class="nav-link text-white" asp - area="" asp-controller="Account" asp-action="Index"> Share </a>
                                 </li>
+
                                 <li class="nav-item">
-                                    <a class="nav-link text-white" asp-area="" asp-controller="MenuMaster" asp-action="Index">User Menu</a>
+
+                                    <a class="nav-link text-white" asp - area="" asp-controller="Deposit" asp-action="Index"> Deposit </a>
+
                                 </li>
+
+                                <li class="nav-item">
+
+                                    <a class="nav-link text-white" asp - area="" asp-controller="Loan" asp-action="Index"> Loan </a>
+
+                                </li>
+
+                                <li class="nav-item">
+
+                                    <a class="nav-link text-white" asp - area="" asp-controller="Cbill" asp-action="Index"> Cbill </a>
+
+                                </li>
+
+                                <li class="nav-item">
+
+                                    <a class="nav-link text-white" asp - area="" asp-controller="Auth" asp-action="Register"> Register </a>
+
+                                </li>
+
+                                if (User.Claims.ToList()[1].Value == "MasterAdmin")
+                                {
+                                    <li class="nav-item">
+
+                                        <a class="nav-link text-white" asp - area="" asp-controller="MenuMaster" asp-action="AddMenuForRole"> Role Menu </a>
+
+                                    </li>
+
+                                    <li class="nav-item">
+
+                                        <a class="nav-link text-white" asp - area="" asp-controller="MenuMaster" asp-action="Index"> User Menu </a>
+
+                                    </li>
+                                }
+
                             }
+                            else if (User.Claims.ToList() != null && User.Claims.ToList().Count() > 0 && User.Claims.ToList()[1].Value != null && User.Claims.ToList()[1].Value == "customer")
+                            {
+                                <li class="nav-item">
 
-                        }
-                        else if (User.Claims.ToList() != null && User.Claims.ToList().Count() > 0 && User.Claims.ToList()[1].Value != null && User.Claims.ToList()[1].Value == "customer")
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-white" asp-area="" asp-controller="Account" asp-action="Index">Share</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-white" asp-area="" asp-controller="Deposit" asp-action="Index">Deposit</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-white" asp-area="" asp-controller="Loan" asp-action="Index">Loan</a>
-                            </li>
+                                    <a class="nav-link text-white" asp - area="" asp-controller="Account" asp-action="Index"> Share </a>
+
+                                </li>
+
+                                <li class="nav-item">
+
+                                    <a class="nav-link text-white" asp - area="" asp-controller="Deposit" asp-action="Index"> Deposit </a>
+
+                                </li>
+
+                                <li class="nav-item">
+
+                                    <a class="nav-link text-white" asp - area="" asp-controller="Loan" asp-action="Index"> Loan </a>
+
+                                </li>
 
 
+                            }
                         }
                         @if (User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-white" asp-controller="Auth" asp-action="Logout">Logout</a>
+
+                                <a class="nav-link text-white" asp-controller="Auth" asp-action="Logout"> Logout </a>
+
                             </li>
                         }
                         else
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-white" asp-controller="Auth" asp-action="Login">Login</a>
+
+                                <a class="nav-link text-white" asp-controller="Auth" asp-action="Login"> Login </a>
+
                             </li>
 
                         }
@@ -86,9 +157,6 @@
                             @if (User.Claims.ToList() != null && User.Claims.ToList().Count() > 0 && User.Claims.ToList()[2].Value != null)
                             {<a class="nav-link text-white"> @User.Claims.ToList()[2].Value.ToString() </a>}
                         </li>
-
-
-
                     </ul>
                 </div>
             </div>

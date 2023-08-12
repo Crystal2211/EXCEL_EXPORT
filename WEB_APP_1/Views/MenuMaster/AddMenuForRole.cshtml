@@ -56,8 +56,8 @@
                             <br />
                             <div class="form-row">
                                 <label for="USE_YN">Active</label>
-                                <input asp-for="USE_YN" name="rdoYes" type="radio" value="Yes" style="margin-left:10px;margin-top:-3px" /> <label for="rdoYes" style="padding-top:3">Yes</label>
-                                <input asp-for="USE_YN" name="rdoNo" type="radio" value="No" style="margin-left: 10px; margin-top: -3px" /> <label for="rdoNo" style="padding-top: 3">No</label>
+                                <input asp-for="USE_YN" type="radio" value="Yes" style="margin-left:10px;margin-top:-3px" /> <label for="rdoYes" style="padding-top:3">Yes</label>
+                                <input asp-for="USE_YN" type="radio" value="No" style="margin-left: 10px; margin-top: -3px" /> <label for="rdoNo" style="padding-top: 3">No</label>
                             </div>
                             <br />
                             <div class="form-row-last">
@@ -68,7 +68,7 @@
                 </div>
                 <div class="col-6">
                     <div id="divPrint" class="container">
-                        <h4>Please select the Role</h4>
+                        <h4>No Role Selected</h4>
                     </div>
                 </div>
             </div>
@@ -85,7 +85,7 @@
 <script type="text/javascript">
     $(function () {
         $('#ddlRole').change(function () {
-            $('#txtUserRole').html($('#ddlRole').val());
+            var id = $('#ddlRole').val();
             $.ajax({
                 type: "GET",
                 url: "/MenuMaster/GetMenuForRole?roleName=" + $('#ddlRole').val(),
@@ -98,11 +98,17 @@
                     $('#cover-spin').hide();
                     if (response.statusCode != 200 && response.statusCode != 404)
                         alert('Some error occured while uploading');
-                    else if (response.statusCode == 404)
+                    else if (response.statusCode == 404) {
+                        $('#User_Roll').val(id);
                         $('#divPrint').html('<h4>No Menu assign yet to this Role</h4>');
+                    }
                     else if (response.statusCode == 200) {
-                        Exceldata = response.result;
-                        $('#divPrint').html(response.errorMessages[0]);
+                        $.ajax({
+                            url: "/MenuMaster/MenuList?menuMasterModels=" + JSON.stringify(response.result),
+                            success: function (result) {
+                                $('#divPrint').html(result);
+                            }
+                        });
                     }
                     else {
                         $('#btnExport').removeAttr('disabled');

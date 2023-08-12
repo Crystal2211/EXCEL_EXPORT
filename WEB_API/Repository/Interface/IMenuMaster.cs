@@ -10,5 +10,7 @@ namespace WEB_API.Repository.Interface
     {
         IEnumerable<MenuMaster> GetMenuMaster();
         IEnumerable<MenuMaster> GetMenuMaster(String UserRole);
+        Task<MenuMaster> UpdateAsync(MenuMaster entity);
+
     }
 }

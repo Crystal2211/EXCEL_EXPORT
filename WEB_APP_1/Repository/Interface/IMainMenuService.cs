@@ -10,11 +10,11 @@ namespace WEB_APP.Repository.Interface
     {
         Task<T> GetAllAsync<T>(string token);
         Task<T> GetAsync<T>(int id, string token);
-        Task<T> CreateAsync<T>(List<MenuMasterModel> dto, string token);
+        Task<T> CreateAsync<T>(MenuMasterModel dto, string token);
         Task<T> UpdateAsync<T>(MenuMasterModel dto, string token);
         Task<T> DeleteAsync<T>(int id, string token);
         Task<T> GetMenusFromRoleAnduser<T>(string rolename, string username, string token);
-        Task<T> GetMenuFromRole<T>(string roleName, string token);
+        Task<T> GetMenuFromRole<T>(string roleName, string token);       
 
     }
 }

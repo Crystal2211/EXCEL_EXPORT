@@ -66,5 +66,7 @@ namespace WEB_API.Repository.ServiceClass
             _db.MenuMaster.RemoveRange(entities);
             return true;
         }
+
+        
     }
 }

@@ -27,12 +27,14 @@ namespace WEB_APP.Controllers
         private readonly IMapper _mapper;
         private IHostingEnvironment _hostingEnvironment;
 
+        private readonly IMenuMasterService _menuMasterService;
 
-        public DepositController(IDepositService villaService, IMapper mapper, IHostingEnvironment hostingEnvironment)
+        public DepositController(IDepositService villaService, IMapper mapper, IHostingEnvironment hostingEnvironment,IMenuMasterService menuMasterService)
         {
             _depositService = villaService;
             _mapper = mapper;
             _hostingEnvironment = hostingEnvironment;
+            _menuMasterService = menuMasterService;
         }
 
 
@@ -152,6 +154,13 @@ namespace WEB_APP.Controllers
         public async Task<IActionResult> Index()
         {
             List<DepositModel> list = new List<DepositModel>();
+
+            APIResponse menuForRole = await _menuMasterService.GetMenuFromRole<APIResponse>(HttpContext.User.Claims.ToList()[1].Value.ToString(), HttpContext.User.Claims.ToList()[3].Value.ToString());
+            if (menuForRole != null && menuForRole.IsSuccess)
+            {
+                TempData["RolesMenus"] = JsonConvert.DeserializeObject<List<MenuMasterModel>>(Convert.ToString(menuForRole.Result));
+            }
+
 
             var response = await _depositService.GetAllAsync<APIResponse>(HttpContext.User.Claims.LastOrDefault().Value);//await HttpContext.GetTokenAsync("access_token"));
             if (response != null && response.IsSuccess)

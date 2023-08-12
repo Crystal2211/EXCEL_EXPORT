@@ -1,0 +1,78 @@
+﻿@model IEnumerable<ViewModels.Models.MenuMasterModel>
+
+
+<div class="col-6">
+    <table class="table table-striped dt-responsive wrap">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.MenuIdentity)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.MenuID)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.MenuName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Parent_MenuID)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.User_Roll)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.MenuFileName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.MenuURL)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.USE_YN)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CreatedDate)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.MenuIdentity)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.MenuID)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.MenuName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Parent_MenuID)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.User_Roll)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.MenuFileName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.MenuURL)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.USE_YN)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CreatedDate)
+                    </td>
+                    <td>
+                        @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                        @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                        @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

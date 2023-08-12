@@ -29,11 +29,13 @@ namespace WEB_APP.Controllers
         private IHostingEnvironment _hostingEnvironment;
         private object _context;
         private string Products;
-        public AccountController(IAccountService villaService, IMapper mapper, IHostingEnvironment hostingEnvironment)
+        private IMenuMasterService _menuMasterService;
+        public AccountController(IAccountService villaService, IMapper mapper, IHostingEnvironment hostingEnvironment,IMenuMasterService menuMasterService)
         {
             _accountService = villaService;
             _mapper = mapper;
             _hostingEnvironment = hostingEnvironment;
+            _menuMasterService = menuMasterService;
         }
 
         public async Task<IActionResult> Import()
@@ -141,6 +143,12 @@ namespace WEB_APP.Controllers
         {
 
             List<AccountModel> list = new List<AccountModel>();
+
+            APIResponse menuForRole = await _menuMasterService.GetMenuFromRole<APIResponse>(HttpContext.User.Claims.ToList()[1].Value.ToString(), HttpContext.User.Claims.ToList()[3].Value.ToString());
+            if (menuForRole != null && menuForRole.IsSuccess)
+            {
+                TempData["RolesMenus"] = JsonConvert.DeserializeObject<List<MenuMasterModel>>(Convert.ToString(menuForRole.Result));
+            }
 
             var response = await _accountService.GetAllAsync<APIResponse>(HttpContext.User.Claims.LastOrDefault().Value);
             if (response != null && response.IsSuccess)

@@ -21,13 +21,13 @@ namespace WEB_APP.Repository.Services
 
         }
 
-        public Task<T> CreateAsync<T>(List<MenuMasterModel> dto, string token)
+        public Task<T> CreateAsync<T>(MenuMasterModel dto, string token)
         {
             return SendAsync<T>(new APIRequest()
             {
                 ApiType = SD.ApiType.POST,
                 Data = dto,
-                Url = AccountUrl + "/api/MenuMaster",
+                Url = AccountUrl + "/api/MenuMaster/CreateMenuRole",
                 Token = token
             });
         }
