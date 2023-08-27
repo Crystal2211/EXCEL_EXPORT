@@ -77,7 +77,7 @@ namespace WEB_APP.Controllers
                 if (result.IsSuccess == true && result.StatusCode == System.Net.HttpStatusCode.OK && result.Result != null)
                 {
 
-                    var roles = Newtonsoft.Json.JsonConvert.DeserializeObject<string[]>(result.Result.ToString());
+                    var roles = JsonConvert.DeserializeObject<string[]>(result.Result.ToString());
 
                     if (roles != null && roles.Length > 1)
                     {
@@ -95,9 +95,19 @@ namespace WEB_APP.Controllers
                     APIResponse response = await _authService.GetMaxSocietyId<APIResponse>();
                     if (response.IsSuccess && response.StatusCode == System.Net.HttpStatusCode.OK && response.Result != null)
                     {
-                        registerationRequestModel = new RegisterationRequestModel();
-                        registerationRequestModel.Soc_No = (Convert.ToInt32(response.Result) + 1).ToString();
+                        registerationRequestModel = new RegisterationRequestModel
+                        {
+                            Soc_No = (Convert.ToInt32(response.Result) + 1).ToString()
+                        };
                     }
+                    else if (response.IsSuccess && response.StatusCode == System.Net.HttpStatusCode.NotFound && response.Result == null)
+                    {
+                        registerationRequestModel = new RegisterationRequestModel
+                        {
+                            Soc_No = "1"
+                        };
+                    }
+
                     return registerationRequestModel != null ? View(registerationRequestModel) : View();
                 }
                 else if (HttpContext.User.Claims.ToList()[1].Value == SD.AdminRole)
